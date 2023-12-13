@@ -1,0 +1,49 @@
+from datetime import timedelta, datetime
+from time import strptime
+
+busy = [
+{'start' : '10:30',
+'stop' : '10:50'
+},
+{'start' : '18:40',
+'stop' : '18:50'
+},
+{'start' : '14:40',
+'stop' : '15:50'
+},
+{'start' : '16:40',
+'stop' : '17:20'
+},
+{'start' : '20:05',
+'stop' : '20:20'
+}
+]
+
+pattern = '%H:%M'
+work_time = [datetime.strptime('09:00', pattern), datetime.strptime('21:00', pattern)]
+asc_busy = sorted(busy, key=lambda x: x['start'])
+asc_busy_time = [[datetime.strptime(x['start'], pattern), datetime.strptime(x['stop'], pattern)] for x in asc_busy]
+avlbl = []
+list_of_intervals = []
+for delta in asc_busy_time:
+    if delta[0] > work_time[0]:
+        avlbl.append([work_time[0], delta[0]])
+        work_time[0] = delta[1]
+    else:
+        work_time[0] = delta[1]
+if asc_busy_time[-1][1] < work_time[1]:
+    avlbl.append([asc_busy_time[-1][1], work_time[1]])
+for delta in avlbl:
+    while True:
+        interval = delta[0] + timedelta(seconds=30*60)
+        if interval <= delta[1]:
+            list_of_intervals.append(
+                {
+                'start' : datetime.strftime(delta[0], '%H:%M'),
+                'stop' : datetime.strftime(interval, '%H:%M')
+                }
+            )
+            delta[0] = interval
+        else:
+            break
+print(*list_of_intervals, sep='\n')
