@@ -21,7 +21,7 @@ busy = [
 
 pattern = '%H:%M'
 work_time = [datetime.strptime('09:00', pattern), datetime.strptime('21:00', pattern)]
-asc_busy = sorted(busy, key=lambda x: x['start'])
+asc_busy = sorted(busy, key=lambda x: datetime.strptime(x['start'], pattern))
 asc_busy_time = [[datetime.strptime(x['start'], pattern), datetime.strptime(x['stop'], pattern)] for x in asc_busy]
 avlbl = []
 list_of_intervals = []
